@@ -112,7 +112,8 @@ def num_gen(min,max):
     rand_int = random.randint(min, max)
     return rand_int
 
-
+def gen_rand_exState():
+    return num_gen(1, 12)
 def gen_rand_OPR():
     return num_gen(1, 100)
 
@@ -146,6 +147,8 @@ def create_multiple_zones(zone_list):
 
        # Update Name
        zone_obj['ZoneName'] = zoneName
+
+       zone_obj['ExState'] = gen_rand_exState()
 
        zone_obj['SystemMessage'] = gen_rand_systemMessage()
 
