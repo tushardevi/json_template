@@ -206,7 +206,7 @@ def main():
 
     all_buffer_objs = create_multiple_buffers(bufferSize)
 
-    json_template['EventArgs']['BufferInformation'][0] = all_buffer_objs
+    json_template['EventArgs']['BufferInformation']= all_buffer_objs
 
 
     create_json_file(json_template)
