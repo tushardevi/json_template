@@ -113,42 +113,22 @@ def num_gen(min,max):
     return rand_int
 
 
+def gen_rand_OPR():
+    return num_gen(1, 100)
 
-def generate_random_ints():
-    # generating random integer values
-    json_template['EventArgs']['ZoneInformation'][0]['ExState'] = num_gen(1, 12)
-    json_template['EventArgs']['ZoneInformation'][0]['OPR'] = num_gen(1, 100)
-    json_template['EventArgs']['ZoneInformation'][0]['ProductionGoodPartCount'] = num_gen(0, 150)
-    json_template['EventArgs']['BufferInformation'][0]['BufferValue'] = num_gen(0, 25)
+def gen_rand_bufferValue():
+    return num_gen(0, 25)
+def gen_rand_ProductionGoodPartCount():
+     return num_gen(0, 150)
 
-
-def generate_random_strs():
-
-    ## generating random string for SystemMessage
-    random_num1= num_gen(1,10)
-    random_num2= num_gen(1, 10)
+def gen_rand_systemMessage():
+    random_num1 = num_gen(1, 10)
+    random_num2 = num_gen(1, 10)
     rand_string = "Line"
 
-    rand_string = rand_string + " " + str(random_num1) + " " +str(random_num2)
+    rand_string = rand_string + " " + str(random_num1) + " " + str(random_num2)
 
-    json_template['EventArgs']['ZoneInformation'][0]['SystemMessage'] = rand_string
-
-    ## generating random string for ZONe message
-
-    random_num3 = num_gen(1, 200)
-    rand_string2 = "LN"
-
-    rand_string2 = rand_string2 + str(random_num3)
-
-    json_template['EventArgs']['ZoneInformation'][0]['ZoneName'] = rand_string2
-
-
-    ##generating random string for BUffer Name
-    random_num4 = num_gen(1, 200)
-    rand_string3 = "Buffer "
-    rand_string3 = rand_string3 + str(random_num4)
-
-    json_template['EventArgs']['BufferInformation'][0]['BufferName'] = rand_string3
+    return rand_string
 
 def create_json_file(fileName):
     json_file_name = "JSON_template" + str(num_gen(22,567)) + ".json"
@@ -156,9 +136,78 @@ def create_json_file(fileName):
         # Dump dict to JSON
         json.dump(fileName, outfile)
 
+def create_multiple_zones(zone_list):
+    zone_object = json_template['EventArgs']['ZoneInformation'][0]
+    zoneArray = []
+    counter = 1
+    for zoneName in zone_list:
+       # Create new zone obj
+       zone_obj = dict(zone_object)
+
+       # Update Name
+       zone_obj['ZoneName'] = zoneName
+
+       zone_obj['SystemMessage'] = gen_rand_systemMessage()
+
+       zone_obj['OPR'] = gen_rand_OPR()
+
+       zone_obj['ProductionGoodPartCount'] = gen_rand_ProductionGoodPartCount()
+
+
+       # Add to array
+       zoneArray.append(zone_obj)
+
+
+
+
+    return zoneArray
+
+
+
+
+
+
+
+
+
+def create_multiple_buffers(bufferNum):
+    buffer_object = json_template['EventArgs']['BufferInformation'][0]
+    bufferArray = []
+
+    for i in range(1,bufferNum+1):
+        # Create new zone obj
+        buffer_obj = dict(buffer_object)
+
+        # Update BUffer NAme
+        buffer_obj['BufferName'] = "Buffer " + str(i)
+
+        # update buffer value
+        buffer_obj['BufferValue'] = gen_rand_bufferValue()
+
+        # Add to array
+        bufferArray.append(buffer_obj)
+
+
+    return bufferArray
+
+
+    return 0
 def main():
-    generate_random_ints()
-    generate_random_strs()
+
+    ## update the zoneNames list
+    zoneNames = ["ZOneA", "ZOneB", "ZOneC","ZOneD"]
+
+    ## update the bufffer Size
+    bufferSize = 5
+
+    all_zones_objs = create_multiple_zones(zoneNames)
+
+    json_template['EventArgs']['ZoneInformation'] = all_zones_objs # appended all the created zone objects
+
+    all_buffer_objs = create_multiple_buffers(bufferSize)
+
+    json_template['EventArgs']['BufferInformation'][0] = all_buffer_objs
+
 
     create_json_file(json_template)
 
